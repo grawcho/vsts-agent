@@ -50,31 +50,32 @@ namespace Microsoft.VisualStudio.Services.Agent.Listener
                 if (command.Help)
                 {
                     PrintUsage();
-                    return 0;
+                    return Constants.Agent.ReturnCode.Success;
                 }
 
                 if (command.Version)
                 {
                     _term.WriteLine(Constants.Agent.Version);
-                    return 0;
+                    return Constants.Agent.ReturnCode.Success;
                 }
 
                 if (command.Commit)
                 {
                     _term.WriteLine(BuildConstants.Source.CommitHash);
-                    return 0;
+                    return Constants.Agent.ReturnCode.Success;
                 }
 
                 if (command.Unconfigure)
                 {
                     // TODO: Unconfiure, remove config and exit
+                    return Constants.Agent.ReturnCode.Success;
                 }
 
                 if (command.Run && !configManager.IsConfigured())
                 {
                     _term.WriteError(StringUtil.Loc("AgentIsNotConfigured"));
                     PrintUsage();
-                    return 1;
+                    return Constants.Agent.ReturnCode.TerminatedError;
                 }
 
                 // unattend mode will not prompt for args if not supplied.  Instead will error.
@@ -83,26 +84,19 @@ namespace Microsoft.VisualStudio.Services.Agent.Listener
                     try
                     {
                         await configManager.ConfigureAsync(command);
-                        return 0;
+                        return Constants.Agent.ReturnCode.Success;
                     }
                     catch (Exception ex)
                     {
                         Trace.Error(ex);
                         _term.WriteError(ex.Message);
-                        return 1;
+                        return Constants.Agent.ReturnCode.TerminatedError;
                     }
                 }
 
                 if (command.NoStart)
                 {
-                    return 0;
-                }
-
-                if (command.Run && !configManager.IsConfigured())
-                {
-                    // TODO: Is it possible to reach this code? It doesn't appear so.
-                    // TODO: LOC
-                    throw new InvalidOperationException("CanNotRunAgent");
+                    return Constants.Agent.ReturnCode.Success;
                 }
 
                 Trace.Info("Done evaluating commands");
@@ -126,7 +120,7 @@ namespace Microsoft.VisualStudio.Services.Agent.Listener
                     _term.WriteLine(StringUtil.Loc("ConfiguredAsRunAsService", settings.ServiceName));
                 }
 
-                return 0;
+                return Constants.Agent.ReturnCode.Success;
             }
             finally
             {

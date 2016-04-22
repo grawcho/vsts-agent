@@ -72,6 +72,13 @@ namespace Microsoft.VisualStudio.Services.Agent.Worker.Build
             }
         };
 
+        private readonly Dictionary<string, string> _userAgentEnv = new Dictionary<string, string>()
+        {
+            {
+                "GIT_HTTP_USER_AGENT", "vsts-agent-git"
+            }
+        };
+
         public string GitPath { get; set; }
         public Version Version { get; set; }
 
@@ -318,7 +325,7 @@ namespace Microsoft.VisualStudio.Services.Agent.Worker.Build
                 context.Output(message.Data);
             };
 
-            return await processInvoker.ExecuteAsync(repoRoot, GitPath, arg, null, cancellationToken);
+            return await processInvoker.ExecuteAsync(repoRoot, GitPath, arg, _userAgentEnv, cancellationToken);
         }
 
         private async Task<int> ExecuteGitCommandAsync(IExecutionContext context, string repoRoot, string command, string options, IList<string> output)
@@ -349,7 +356,7 @@ namespace Microsoft.VisualStudio.Services.Agent.Worker.Build
                 }
             };
 
-            return await processInvoker.ExecuteAsync(repoRoot, GitPath, arg, null, default(CancellationToken));
+            return await processInvoker.ExecuteAsync(repoRoot, GitPath, arg, _userAgentEnv, default(CancellationToken));
         }
     }
 }

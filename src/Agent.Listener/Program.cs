@@ -29,31 +29,32 @@ namespace Microsoft.VisualStudio.Services.Agent.Listener
                     if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
                         Console.WriteLine(StringUtil.Loc("NotLinux"));
-                        return 1;
+                        return Constants.Agent.ReturnCode.TerminatedError;
                     }
                     break;
                 case Constants.OSPlatform.OSX:
                     if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                     {
                         Console.WriteLine(StringUtil.Loc("NotOSX"));
-                        return 1;
+                        return Constants.Agent.ReturnCode.TerminatedError;
                     }
                     break;
                 case Constants.OSPlatform.Windows:
                     if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
                         Console.WriteLine(StringUtil.Loc("NotWindows"));
-                        return 1;
+                        return Constants.Agent.ReturnCode.TerminatedError;
                     }
                     break;
                 default:
-                    throw new NotSupportedException(Constants.Agent.Platform.ToString());
+                    Console.WriteLine(StringUtil.Loc("PlatformNotSupport", RuntimeInformation.OSDescription, Constants.Agent.Platform.ToString()));
+                    return Constants.Agent.ReturnCode.TerminatedError;
             }
 
             using (HostContext context = new HostContext("Agent"))
             using (var term = context.GetService<ITerminal>())
             {
-                int rc = 0;
+                int rc = Constants.Agent.ReturnCode.Success;
                 try
                 {
                     s_trace = context.GetTrace("AgentProcess");

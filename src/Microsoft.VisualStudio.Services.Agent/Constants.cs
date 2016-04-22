@@ -16,6 +16,7 @@ namespace Microsoft.VisualStudio.Services.Agent
 
         public static class Agent
         {
+            // !!!!!!!!!!!!!!!!!!!!!!!! change back before merge.
             public static readonly string Version = "2.99.0";
 
 #if OS_LINUX
@@ -25,6 +26,14 @@ namespace Microsoft.VisualStudio.Services.Agent
 #elif OS_WINDOWS
             public static readonly OSPlatform Platform = OSPlatform.Windows;
 #endif
+
+            public static class ReturnCode
+            {
+                public const int Success = 0;
+                public const int TerminatedError = 1;
+                public const int RetryableError = 2;
+                public const int AgentUpdating = 3;
+            }
 
             public static class CommandLine
             {
@@ -102,6 +111,7 @@ namespace Microsoft.VisualStudio.Services.Agent
 
         public static class Path
         {
+            public static readonly string BinDirectory = "bin";
             public static readonly string DiagDirectory = "_diag";
             public static readonly string ExternalsDirectory = "externals";
             public static readonly string TeeDirectory = "tee";
