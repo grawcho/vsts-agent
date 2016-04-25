@@ -20,7 +20,6 @@ namespace Microsoft.VisualStudio.Services.Agent.Listener.Configuration
         {
             CredentialData = new CredentialData();
             CredentialData.Scheme = scheme;
-            CredentialData.Data = new Dictionary<string, string>();
         }
 
         public CredentialData CredentialData { get; set; }
