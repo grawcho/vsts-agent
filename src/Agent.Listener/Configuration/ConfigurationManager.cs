@@ -145,15 +145,10 @@ namespace Microsoft.VisualStudio.Services.Agent.Listener.Configuration
                 keyContainerName = $"VSTSAgent-{Guid.NewGuid().ToString("D")}";
             }
 
-            var cspParameters = new CspParameters
-            {
-                Flags = CspProviderFlags.UseMachineKeyStore | CspProviderFlags.UseNonExportableKey,
-                KeyContainerName = keyContainerName,
-            };
-
             // We want to use the native CSP of the platform for storage, so we use the RSACSP directly
             RSAParameters publicKey;
-            using (var rsa = new RSACryptoServiceProvider(2048, cspParameters))
+            var keyManager = HostContext.GetService<IRSAKeyManager>();
+            using (var rsa = keyManager.CreateKey(keyContainerName))
             {
                 publicKey = rsa.ExportParameters(false);
             }
